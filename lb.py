@@ -42,15 +42,16 @@ def round_robin(servers_queue,global_socket):
         conn,addr = global_socket.accept()
         print('Connected by', addr)
 
-        #Recive the data
-        data = conn.recv(MAX_BUFFER)
+        msg = b''
+        while True:
+            data = conn.recv(1024)
+            msg += data
+            if data[len(data)-1] == 10:
+                break
+        message = msg.decode("utf-8") 
 
-
-        message = data.decode("utf-8") 
-
-        print(message)
         print('-'*50)
-
+        print(message)
         #Send the data
         server_to_send = servers_queue.get()
 
@@ -59,16 +60,23 @@ def round_robin(servers_queue,global_socket):
 
         socket_to_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         socket_to_server.connect((server_ip, server_port))
-        socket_to_server.sendall(data)
+        socket_to_server.sendall(msg)
         
-        
-        response = socket_to_server.recv(MAX_BUFFER)
+        response = b''
+        while True:
+            data = socket_to_server.recv(1024)
+            response += data
+            if data[len(data)-1] == 10:
+                break
+        message = response.decode("utf-8") 
+
+        print(message)
+        print('-'*50)
 
         conn.sendall(response)
         conn.close()
         socket_to_server.close()
-
-        print(response)
+        
         #add again the server
         servers_queue.put(server_to_send)
 
