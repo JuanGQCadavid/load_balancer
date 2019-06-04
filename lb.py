@@ -3,8 +3,8 @@
 import socket
 import queue
 import _thread
-HOST = 'localhost'
-PORT = 8000 #Port listening -> (1023,65535]
+HOST = ''
+PORT = 80 #Port listening -> (1023,65535]
 BACK_LOG = 100
 MAX_BUFFER = 65507 #https://es.stackoverflow.com/questions/43482/python-socket-como-recibir-todos-los-datos-con-socket-recv
 
@@ -71,21 +71,15 @@ def new_connection(conn,addr,server_ip,server_port):
             #if data[len(data)-1] == 10:
             if data[len(data)-1] == 10:
                 break
-        message = msg.decode("utf-8") 
-
+        message = ''
         print('-'*50)
-        message = message.replace('Connection: keep-alive','')
-        print(message)
-        print(len(message))
-        #if (len(message) == 0):
-        #    break
-        
-
-        
-        #message.replace('Host')
-        
-        #Send the data
-
+        try:
+            
+            message = msg.decode("utf-8") 
+            message = message.replace('Connection: keep-alive','')
+            print(message)
+        except:
+            print("I can't applied decode")
 
         socket_to_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         socket_to_server.connect((server_ip, server_port))
@@ -99,9 +93,13 @@ def new_connection(conn,addr,server_ip,server_port):
                 break
             if data[len(data)-1] == 10:
                 break
-        message = response.decode("utf-8") 
-
-        print(message)
+        
+        try:    
+            message = response.decode("utf-8") 
+            message = message.replace('Connection: keep-alive','')
+            print(message)
+        except:
+            print("I can't applied decode")
         print('-'*50)
 
         conn.sendall(response)
