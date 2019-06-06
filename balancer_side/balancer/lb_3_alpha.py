@@ -99,7 +99,7 @@ class myHandler(BaseHTTPRequestHandler):
 
 class http_server:
     def __init__(self,round_robbin):
-        HOST_NAME = 'localhost'
+        HOST_NAME = ''
         PORT_NUMBER = 9000
 
         app = HTTPServer((HOST_NAME, PORT_NUMBER), myHandler)
