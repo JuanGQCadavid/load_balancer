@@ -1,6 +1,7 @@
 import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import queue
+import requests
 
 HOST_NAME = 'localhost'
 PORT_NUMBER = 9000
@@ -45,31 +46,45 @@ class MyHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        paths = {
-            '/foo': {'status': 200},
-            '/bar': {'status': 302},
-            '/baz': {'status': 404},
-            '/qux': {'status': 500}
-        }
-
-        if self.path in paths:
-            self.respond(paths[self.path])
-        else:
-            self.respond({'status': 500})
+        self.respond({'status': 200})
 
     def handle_http(self, status_code, path,requestline):
-        server_ip,server_port = self.getServer()
+        #server_ip,server_port = self.getServer()
+        print('-'*8)
+
+        msg = requestline
+        print(msg)
+
+        msg = msg.split(" ")
+        URL = "http://3.84.69.127:80" + msg[1]
+        print(URL)
+        
+        # sending get request and saving the response as response object 
+        r = requests.get(url = URL) 
+
+        result = r.text
+
+        print('*'*8)
+        print(msg)
+        print(result)
+
+        type_of_content = msg[1].split('.')
+        print(type_of_content)
+
+        if(len(type_of_content)> 1):
+            if(type_of_content[1] == 'css'):
+                type_of_content = 'text/css'
+            else:
+                type_of_content = 'text/html'
+        else:
+            type_of_content = 'text/html'
+
         self.send_response(status_code)
-        self.send_header('Content-type', 'text/html')
+        
+        self.send_header('Content-type', type_of_content)
         self.end_headers()
-        content = '''
-        <html><head><title>Title goes here.</title></head>
-        <body><p>This is a test.</p>
-        <p>Request: {}</p>
-        <p>to: {}:{}</p>
-        </body></html>
-        '''.format(requestline,server_ip,server_port)
-        return bytes(content, 'UTF-8')
+
+        return bytes(result, 'UTF-8')
 
     def respond(self, opts):
         response = self.handle_http(opts['status'], self.path, self.requestline)
@@ -79,7 +94,6 @@ class MyHandler(BaseHTTPRequestHandler):
 if __name__ == '__main__':
     server_class = HTTPServer
     httpd = server_class((HOST_NAME, PORT_NUMBER), MyHandler)
-    httpd.balancer_init()
     print(time.asctime(), 'Server Starts - %s:%s' % (HOST_NAME, PORT_NUMBER))
     
     try:
