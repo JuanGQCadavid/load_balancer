@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css">
+    <script src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
+    <link rel="stylesheet" type="text/css" href="static/index.css">
+</head>
+  <body>
+    <div class="modal-dialog text-center">
+        <div class="col-sm-8 main-section">
+            <div class="modal-content">
+                <div class="col-12 user-img">
+                    <h2>Create a account</h2>
+                </div>
+                <form class="col-12" method="post">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Nombre Completo" name="username"/>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Correo Electronico" name="correo"/>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" placeholder="Contrasena" name="password"/>
+                    </div>
+                    <div class="col-12 forgot">
+                        <p href="#">Al registrarte aceptas nuestra politica de privacidad y uso de datos.</p>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i>  Registrarme </button>
+                    <p> ¿tienes cuenta? <a class="link" href="{{ url_for('index') }}">Login</a> </p>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    </body>
+    </html>
