@@ -6,7 +6,7 @@ app = Flask(__name__)
 #Add a single endpoint - testing
 @app.route('/', methods = ['GET'])
 def home():
-    return '<h1> Hello bitches </h> <p> My name is Juan Gonzalo Quiroz Cadavid'
+    return render_template('log.html')
 
 #When run from command line, start the server
 if __name__ == '__main__':
