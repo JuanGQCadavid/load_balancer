@@ -36,15 +36,12 @@ class myHandler(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
-    def do_GET(self):
-        response = self.handle_http(200, self.path, self.requestline)
-        self.wfile.write(response)
-
     def getURLtoSend(self):
         
         ip,port = self.server.round_robbin.getServer()
 
         msg = self.requestline
+        print(msg)
         msg = msg.split(" ")
         URL = "http://" + ip +":" + str(port) + msg[1]
         
@@ -53,6 +50,20 @@ class myHandler(BaseHTTPRequestHandler):
         print('!'*67)
 
         return URL
+
+    def sendRequest(self,URL, data_dict = None):
+        if data_dict == None:
+            r = requests.get(URL)
+        else:
+            r = requests.post(URL, data_dict)
+        result = r.text
+
+        self.send_response(200)
+        self.end_headers()
+
+        response =  bytes(result, 'UTF-8')
+        
+        return response
 
     def do_POST(self):
         print('-'*8)
@@ -70,51 +81,21 @@ class myHandler(BaseHTTPRequestHandler):
             data = data.split('=')
             data_dict[data[0]] = data[1]
 
-        r = requests.post(URL, data_dict)
-        result = r.text
+        response = self.sendRequest(URL,data_dict)
 
-        self.send_response(200)
-        self.end_headers()
+        self.wfile.write(response)
 
-        response =  bytes(result, 'UTF-8')
+    def do_GET(self):
+        print('-'*8)
+        URL = self.getURLtoSend()
+        print(URL)
+        print('-'*8)
+
+        response = self.sendRequest(URL)
 
         self.wfile.write(response)
 
 
-    def handle_http(self, status_code, path,requestline):
-        #server_ip,server_port = self.getServer()
-
-        print('-'*8)
-        URL = self.getURLtoSend()
-        print(URL)
-        
-        # sending get request and saving the response as response object 
-        r = requests.get(url = URL) 
-
-        result = r.text
-        msg = requestline.split(" ")
-
-        print('*'*8)
-        print(msg)
-        print(result)
-
-        type_of_content = msg[1].split('.')
-        print(type_of_content)
-
-        if(len(type_of_content)> 1):
-            if(type_of_content[1] == 'css'):
-                type_of_content = 'text/css'
-            else:
-                type_of_content = 'text/html'
-        else:
-            type_of_content = 'text/html'
-
-        self.send_response(status_code)
-        
-        self.send_header('Content-type', type_of_content)
-        self.end_headers()
-
-        return bytes(result, 'UTF-8')
 
 class http_server:
     def __init__(self,round_robbin):
