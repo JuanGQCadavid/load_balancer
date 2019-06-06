@@ -4,7 +4,7 @@ import socket
 import queue
 import _thread
 HOST = ''
-PORT = 80 #Port listening -> (1023,65535]
+PORT = 5566 #Port listening -> (1023,65535]
 BACK_LOG = 100
 MAX_BUFFER = 65507 #https://es.stackoverflow.com/questions/43482/python-socket-como-recibir-todos-los-datos-con-socket-recv
 
@@ -69,7 +69,7 @@ def new_connection(conn,addr,server_ip,server_port):
             if len(data) == 0:
                 break
             #if data[len(data)-1] == 10:
-            if data[len(data)-1] == 10:
+            if data[len(data)-1] == b'':
                 break
         message = ''
         print('-'*50)
@@ -91,7 +91,7 @@ def new_connection(conn,addr,server_ip,server_port):
             response += data
             if len(data) == 0:
                 break
-            if data[len(data)-1] == 10:
+            if data[len(data)-1] == b'':
                 break
         
         try:    
