@@ -40,26 +40,59 @@ class myHandler(BaseHTTPRequestHandler):
         response = self.handle_http(200, self.path, self.requestline)
         self.wfile.write(response)
 
+    def getURLtoSend(self):
+        
+        ip,port = self.server.round_robbin.getServer()
+
+        msg = self.requestline
+        msg = msg.split(" ")
+        URL = "http://" + ip +":" + str(port) + msg[1]
+        
+        print('!'*67)
+        print(URL)
+        print('!'*67)
+
+        return URL
+
+    def do_POST(self):
+        print('-'*8)
+        URL = self.getURLtoSend()
+        print(URL)
+        
+        print('-'*8)
+        content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
+        post_data = self.rfile.read(content_length) # <--- Gets the data itself
+
+        post_data = (post_data.decode('utf-8')).split('&')
+        data_dict = {}
+
+        for data in post_data:
+            data = data.split('=')
+            data_dict[data[0]] = data[1]
+
+        r = requests.post(URL, data_dict)
+        result = r.text
+
+        self.send_response(200)
+        self.end_headers()
+
+        response =  bytes(result, 'UTF-8')
+
+        self.wfile.write(response)
+
+
     def handle_http(self, status_code, path,requestline):
         #server_ip,server_port = self.getServer()
-        print('!'*67)
-        ip,port = self.server.round_robbin.getServer()
-        print('Result ->',ip,':',port)
-        print('!'*67)
 
         print('-'*8)
-
-        msg = requestline
-        print(msg)
-
-        msg = msg.split(" ")
-        URL = "http://3.84.69.127:80" + msg[1]
+        URL = self.getURLtoSend()
         print(URL)
         
         # sending get request and saving the response as response object 
         r = requests.get(url = URL) 
 
         result = r.text
+        msg = requestline.split(" ")
 
         print('*'*8)
         print(msg)
