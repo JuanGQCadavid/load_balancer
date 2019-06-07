@@ -1,5 +1,6 @@
 from flask import Flask,render_template, request,jsonify,Response,redirect,url_for
 from database import Database
+import sys
 # Router calls objetc
 app = Flask(__name__)
 db = None
@@ -53,7 +54,12 @@ if __name__ == '__main__':
     global Database
     db = Database()
     try:
-        app.run(host = '0.0.0.0', port = 3333, debug=True)
+        debug=True
+        if len(sys.argv) > 1:
+            if sys.argv[1] == '-Dev':
+                debug=False
+        
+        app.run(host = '0.0.0.0', port = 3333, debug=debug)
     except KeyboardInterrupt:
         print('Clossing server...')
         db.close_connection()

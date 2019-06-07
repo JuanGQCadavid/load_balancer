@@ -8,4 +8,4 @@ WORKDIR /app
 
 RUN pip install -r requirments.txt
 
-CMD ["python3.6","server.py"]
+CMD python3.6 server.py -Dev

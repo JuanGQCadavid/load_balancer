@@ -5,6 +5,18 @@ if ! [ -x "$(command -v docker)" ]; then
   wget -qO- https://get.docker.com/ | sh
 fi
 
+echo "Removing old dockers .."
+docker stop web-app-service-1
+docker rm web-app-service-1
+
+docker stop web-app-service-2
+docker rm web-app-service-2
+
+echo "Done."
+
+echo "Removing old img ..."
+docker rmi web-app-img
+echo "Done."
 
 echo "Building img"
 docker build -t web-app-img .
