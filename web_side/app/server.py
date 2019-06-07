@@ -1,7 +1,9 @@
 from flask import Flask,render_template, request,jsonify,Response,redirect,url_for
-
+from database import Database
 # Router calls objetc
 app = Flask(__name__)
+db = None
+
 
 #Add a single endpoint - testing
 @app.route('/', methods = ['GET', 'POST'])
@@ -33,16 +35,25 @@ def register():
     return render_template('register.html')
 
 def valid_login(username,password):
-    print('Log-in ->' , username, password)
-    if(username == 'juan') and (password == '123'):
+    print('LOG IN ->' , username, password)
+    result = db.validUser(username,password)
+    if result:
         return True
     else:
         return False
 
 def register_user(username,password,email):
-    print('Save ->',username,password,email)
+    print('REGISTER USER ->',username,password,email)
+    result = db.registerUser(username,password,email)
+    print(result)
     pass
 
 #When run from command line, start the server
 if __name__ == '__main__':
-    app.run(host = '0.0.0.0', port = 3333, debug=True)
+    global Database
+    db = Database()
+    try:
+        app.run(host = '0.0.0.0', port = 3333, debug=True)
+    except KeyboardInterrupt:
+        print('Clossing server...')
+        db.close_connection()
