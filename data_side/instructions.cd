@@ -1,0 +1,14 @@
+create database appdemo;
+
+USE appdemo;
+
+
+CREATE TABLE IF NOT EXISTS user (
+    user_id INT AUTO_INCREMENT,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    PRIMARY KEY (user_id)
+)  ENGINE=INNODB;
+
+ALTER TABLE user ADD INDEX (username);
