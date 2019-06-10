@@ -2,7 +2,7 @@ import pymysql
 
 class Database:
     def __init__(self):
-        host = "127.0.0.1"
+        host = "35.153.140.109"
         user = "root"
         password = "soylaclavesecreta"
         db = "appdemo"
