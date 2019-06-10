@@ -5,6 +5,9 @@ if ! [ -x "$(command -v docker)" ]; then
   wget -qO- https://get.docker.com/ | sh
 fi
 
+docker stop app-mysql-db
+docker rm app-mysql-db
+
 docker volume create mysql-db-data
 docker volume ls
 docker run -d -p 3306:3306 --name app-mysql-db -e MYSQL_ROOT_PASSWORD=soylaclavesecreta --mount src=mysql-db-data,dst=/var/lib/mysql mysql
